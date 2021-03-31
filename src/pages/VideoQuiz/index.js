@@ -1,0 +1,1 @@
+export { VideoQuizScreen } from './VideoQuizScreen';
