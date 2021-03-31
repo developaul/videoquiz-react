@@ -1,7 +1,6 @@
 import { useDispatch } from 'react-redux';
 import {
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardMedia,
@@ -10,11 +9,11 @@ import {
 } from '@material-ui/core';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-// import CachedIcon from '@material-ui/icons/Cached';
+import CachedIcon from '@material-ui/icons/Cached';
 import StopIcon from '@material-ui/icons/Stop';
 
 import { useVideo } from '../../hooks/useVideo';
-import { startUpdateVideoQuiz } from '../../actions/VideoQuizAction';
+import { startUpdateVideoQuiz, startDeleteVideoQuiz } from '../../actions/VideoQuizAction';
 
 import { useStyles } from './VideoQuiz.css';
 import { useSnackbar } from 'notistack';
@@ -23,7 +22,6 @@ export const VideoQuiz = ({ id, question, url }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-
 
   const errorPermiss = () => enqueueSnackbar('Para poder responder la pregunta, necesitas dar permisos de camara y audio', { variant: 'error' });
 
@@ -50,40 +48,41 @@ export const VideoQuiz = ({ id, question, url }) => {
 
   }
 
+  const deleteVideo = () => dispatch(startDeleteVideoQuiz(id));
+
   return (
     <Card className={classes.root}>
-      <CardActionArea>
-        {(url) ?
-          (
+      {/* <CardActionArea> */}
+      {(url) ?
+        (
+          <>
             <CardMedia
               className={classes.media}
               title="Contemplative Reptile"
               component="video"
-              // ref={userVideoRef}
-              controls
-              // playsInline
               src={url}
+              controls
             />
-          )
-          :
-          (
-            <CardMedia
-              className={classes.media}
-              title="Contemplative Reptile"
-              component="video"
-              ref={userVideoRef}
-              playsInline
-              poster="../assets/images/videonotfound.png"
-            />
-          )
-
-        }
-        <CardContent>
-          <Typography align="center" variant="body2" color="textSecondary" component="p">
-            {question}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+          </>
+        )
+        :
+        (
+          <CardMedia
+            className={classes.media}
+            title="Contemplative Reptile"
+            component="video"
+            ref={userVideoRef}
+            playsInline
+            poster="../assets/images/videonotfound.png"
+          />
+        )
+      }
+      <CardContent>
+        <Typography align="center" variant="body2" color="textSecondary" component="p">
+          {question}
+        </Typography>
+      </CardContent>
+      {/* </CardActionArea> */}
       <CardActions>
         {(isRecording)
           ? (
@@ -96,14 +95,28 @@ export const VideoQuiz = ({ id, question, url }) => {
             </IconButton>
           )
           :
-          ((!url) &&
-            <IconButton
-              color="primary"
-              className={classes.firstAction}
-              onClick={startRecording}
-            >
-              <PlayArrowIcon fontSize="large" />
-            </IconButton>
+          ((url)
+            ?
+            (
+              <IconButton
+                color="primary"
+                className={classes.retryAction}
+                onClick={deleteVideo}
+              >
+                <CachedIcon fontSize="large" />
+              </IconButton>
+            )
+            :
+            (
+              <IconButton
+                color="primary"
+                className={classes.firstAction}
+                onClick={startRecording}
+              >
+                <PlayArrowIcon fontSize="large" />
+              </IconButton>
+            )
+
           )
         }
         {(isRecording) &&

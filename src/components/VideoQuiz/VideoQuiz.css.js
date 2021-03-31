@@ -13,6 +13,11 @@ export const useStyles = makeStyles({
     left: '14px',
     bottom: '84px'
   },
+  retryAction: {
+    position: 'absolute',
+    right: '20px',
+    top: '20px'
+  },
   feedback: {
     alignItems: 'center',
     display: 'flex',

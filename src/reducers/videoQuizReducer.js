@@ -16,6 +16,15 @@ export const videoQuizReducer = (state = initialState, action) => {
         )
       }
 
+    case types.deleteVideoQuiz:
+      return {
+        ...state,
+        videosQuizzes: state.videosQuizzes.map((videoQuiz) => (videoQuiz.id === action.payload)
+          ? { ...videoQuiz, url: '' }
+          : videoQuiz
+        )
+      }
+
     default:
       return state;
   }
