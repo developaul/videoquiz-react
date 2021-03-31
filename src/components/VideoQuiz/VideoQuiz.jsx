@@ -27,13 +27,11 @@ export const VideoQuiz = ({ id, question, url }) => {
 
   const {
     isRecording,
-    // videoUrl,
     userVideoRef,
     startRecording,
     stopRecording
   } = useVideo({
     isRecording: false,
-    // url
   }, saveVideo, errorPermiss);
 
 
@@ -52,7 +50,6 @@ export const VideoQuiz = ({ id, question, url }) => {
 
   return (
     <Card className={classes.root}>
-      {/* <CardActionArea> */}
       {(url) ?
         (
           <>
@@ -82,7 +79,6 @@ export const VideoQuiz = ({ id, question, url }) => {
           {question}
         </Typography>
       </CardContent>
-      {/* </CardActionArea> */}
       <CardActions>
         {(isRecording)
           ? (
@@ -122,7 +118,7 @@ export const VideoQuiz = ({ id, question, url }) => {
         {(isRecording) &&
           (
             <div className={classes.feedback}>
-              <Typography>1:30 / 2:00</Typography>
+              <Typography>Rec</Typography>
               <FiberManualRecordIcon fontSize="large" />
             </div>
           )
