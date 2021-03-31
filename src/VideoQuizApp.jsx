@@ -1,5 +1,7 @@
-import { ThemeProvider } from '@material-ui/core';
 import { Provider } from 'react-redux';
+import { SnackbarProvider } from 'notistack';
+import { ThemeProvider } from '@material-ui/core';
+import { Slide } from '@material-ui/core';
 
 import { AppRouter } from './routers';
 
@@ -10,9 +12,19 @@ const VideoQuizApp = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <AppRouter />
-        </Provider>
+        <SnackbarProvider
+          preventDuplicate
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          TransitionComponent={Slide}
+        >
+          <Provider store={store}>
+            <AppRouter />
+          </Provider>
+        </SnackbarProvider>
       </ThemeProvider>
     </>
   );

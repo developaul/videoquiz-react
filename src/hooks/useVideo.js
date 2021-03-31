@@ -1,27 +1,33 @@
 import { useState, useEffect, useRef } from 'react';
 
-export const useVideo = (initialState, fn) => {
-  const [{ isRecording, url }, setRecordingStatus] = useState(initialState);
+export const useVideo = (initialState, fn, errorPermiss) => {
+  const [{ isRecording }, setRecordingStatus] = useState(initialState);
   const [{ stream, mediaRecorder }, setVideoController] = useState({
     stream: null,
     mediaRecorder: null
   });
 
   const userVideoRef = useRef(null);
-  const chunksRef = useRef([]); // TODO: FIX THIS
+  const chunksRef = useRef([]);
 
   useEffect(() => {
 
     (async () => {
 
-      const { stream, mediaRecorder } = await initCamera();
-      setVideoController({
-        stream,
-        mediaRecorder
-      });
+      try {
+
+        const { stream, mediaRecorder } = await initCamera();
+        setVideoController({
+          stream,
+          mediaRecorder
+        });
+      } catch (err) {
+        errorPermiss();
+      }
 
     })();
 
+    // eslint-disable-next-line
   }, []);
 
   const initCamera = async () => {
@@ -30,14 +36,11 @@ export const useVideo = (initialState, fn) => {
       audio: true
     });
 
-    if (userVideoRef.current) {
-      userVideoRef.current.srcObject = stream;
-      userVideoRef.current.muted = true;
-      userVideoRef.current.play();
-    }
+    userVideoRef.current.srcObject = stream;
+    userVideoRef.current.muted = true;
+    userVideoRef.current.play();
 
     const mediaRecorder = new MediaRecorder(stream);
-
     mediaRecorder.ondataavailable = e => {
       if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
     }
@@ -50,20 +53,26 @@ export const useVideo = (initialState, fn) => {
   }
 
   const startRecording = async () => {
-    let media = mediaRecorder;
-    if (!(userVideoRef.current && userVideoRef.current.srcObject)) {
-      const { mediaRecorder: m, stream: s } = await initCamera();
-      media = m;
-      setVideoController({ mediaRecorder: m, stream: s });
-    }
-    if (media) {
+
+    try {
+
+      let media = mediaRecorder;
+      if (!(userVideoRef.current && userVideoRef.current.srcObject)) {
+        const { mediaRecorder: m, stream: s } = await initCamera();
+        media = m;
+        setVideoController({ mediaRecorder: m, stream: s });
+      }
+
       media.start(1000);
 
       setRecordingStatus(s => ({
         ...s,
         isRecording: true
       }));
+    } catch (err) {
+      errorPermiss();
     }
+
   }
 
   const stopRecording = async () => {
@@ -73,30 +82,26 @@ export const useVideo = (initialState, fn) => {
       try {
         const blob = new Blob(chunksRef.current, { type: chunksRef.current[0].type });
         const url = URL.createObjectURL(blob);
-        if (userVideoRef.current) {
+        // if (userVideoRef.current) {
 
-          if (!stream) return;
-          let tracks = stream.getTracks();
+        let tracks = stream.getTracks();
 
-          tracks.forEach(function (track) {
-            track.stop();
-          });
+        tracks.forEach(function (track) {
+          track.stop();
+        });
 
 
-          userVideoRef.current.srcObject = null;
-          chunksRef.current = [];
-          setRecordingStatus({
-            url,
-            isRecording: false
-          });
+        userVideoRef.current.srcObject = null;
+        chunksRef.current = [];
+        setRecordingStatus({
+          // url,
+          isRecording: false
+        });
 
-          // setVideoController({
-          //   stream: null,
-          //   mediaRecorder: null
-          // })
 
-          fn(url);
-        }
+        fn(url);
+        // }
+
       } catch (err) {
         console.log(err)
       }
@@ -105,7 +110,7 @@ export const useVideo = (initialState, fn) => {
 
   return {
     isRecording,
-    videoUrl: url,
+    // videoUrl: url,
     userVideoRef,
     startRecording,
     stopRecording,

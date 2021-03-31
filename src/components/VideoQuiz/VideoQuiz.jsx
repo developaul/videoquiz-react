@@ -17,20 +17,27 @@ import { useVideo } from '../../hooks/useVideo';
 import { startUpdateVideoQuiz } from '../../actions/VideoQuizAction';
 
 import { useStyles } from './VideoQuiz.css';
+import { useSnackbar } from 'notistack';
 
 export const VideoQuiz = ({ id, question, url }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
+
+
+  const errorPermiss = () => enqueueSnackbar('Para poder responder la pregunta, necesitas dar permisos de camara y audio', { variant: 'error' });
+
   const {
     isRecording,
-    videoUrl,
+    // videoUrl,
     userVideoRef,
     startRecording,
     stopRecording
   } = useVideo({
     isRecording: false,
-    url
-  }, saveVideo);
+    // url
+  }, saveVideo, errorPermiss);
+
 
   function saveVideo(url) {
     const videoQuiz = {
@@ -55,7 +62,7 @@ export const VideoQuiz = ({ id, question, url }) => {
               // ref={userVideoRef}
               controls
               // playsInline
-              src={videoUrl}
+              src={url}
             />
           )
           :
@@ -65,8 +72,8 @@ export const VideoQuiz = ({ id, question, url }) => {
               title="Contemplative Reptile"
               component="video"
               ref={userVideoRef}
-              autoPlay
               playsInline
+              poster="../assets/images/videonotfound.png"
             />
           )
 

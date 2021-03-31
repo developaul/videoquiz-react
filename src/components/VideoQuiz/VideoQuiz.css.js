@@ -6,16 +6,17 @@ export const useStyles = makeStyles({
     position: 'relative',
   },
   media: {
-    height: 708,
+    // height: 708,
   },
   firstAction: {
     position: 'absolute',
-    left: '4px',
-    bottom: '66px'
+    left: '14px',
+    bottom: '84px'
   },
   feedback: {
     alignItems: 'center',
     display: 'flex',
+    color: 'red',
     position: 'absolute',
     right: '20px',
     top: '20px'
