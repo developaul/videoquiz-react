@@ -82,7 +82,6 @@ export const useVideo = (initialState, fn, errorPermiss) => {
       try {
         const blob = new Blob(chunksRef.current, { type: chunksRef.current[0].type });
         const url = URL.createObjectURL(blob);
-        // if (userVideoRef.current) {
 
         let tracks = stream.getTracks();
 
@@ -90,17 +89,13 @@ export const useVideo = (initialState, fn, errorPermiss) => {
           track.stop();
         });
 
-
         userVideoRef.current.srcObject = null;
         chunksRef.current = [];
         setRecordingStatus({
-          // url,
           isRecording: false
         });
 
-
         fn(url);
-        // }
 
       } catch (err) {
         console.log(err)
@@ -110,7 +105,6 @@ export const useVideo = (initialState, fn, errorPermiss) => {
 
   return {
     isRecording,
-    // videoUrl: url,
     userVideoRef,
     startRecording,
     stopRecording,

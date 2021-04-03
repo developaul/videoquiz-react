@@ -5,9 +5,6 @@ export const useStyles = makeStyles({
     minWidth: 245,
     position: 'relative',
   },
-  media: {
-    // height: 708,
-  },
   firstAction: {
     position: 'absolute',
     left: '14px',

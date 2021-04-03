@@ -25,6 +25,10 @@ export const VideoQuiz = ({ id, question, url }) => {
 
   const errorPermiss = () => enqueueSnackbar('Para poder responder la pregunta, necesitas dar permisos de camara y audio', { variant: 'error' });
 
+  const saveVideo = url => dispatch(startUpdateVideoQuiz({ id, url, question }));
+
+  const deleteVideo = () => dispatch(startDeleteVideoQuiz(id));
+
   const {
     isRecording,
     userVideoRef,
@@ -34,27 +38,12 @@ export const VideoQuiz = ({ id, question, url }) => {
     isRecording: false,
   }, saveVideo, errorPermiss);
 
-
-  function saveVideo(url) {
-    const videoQuiz = {
-      id,
-      url,
-      question
-    }
-
-    dispatch(startUpdateVideoQuiz(videoQuiz));
-
-  }
-
-  const deleteVideo = () => dispatch(startDeleteVideoQuiz(id));
-
   return (
     <Card className={classes.root}>
       {(url) ?
         (
           <>
             <CardMedia
-              className={classes.media}
               title="Contemplative Reptile"
               component="video"
               src={url}
@@ -65,7 +54,6 @@ export const VideoQuiz = ({ id, question, url }) => {
         :
         (
           <CardMedia
-            className={classes.media}
             title="Contemplative Reptile"
             component="video"
             ref={userVideoRef}
@@ -91,8 +79,7 @@ export const VideoQuiz = ({ id, question, url }) => {
             </IconButton>
           )
           :
-          ((url)
-            ?
+          ((url) ?
             (
               <IconButton
                 color="primary"
